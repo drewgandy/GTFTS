@@ -1,3 +1,15 @@
+# this requires the following dependencies:
+# * Adafruit Neopxiels
+# * pause
+# to install:
+#sudo apt-get install build-essential python-dev git scons swig
+#git clone https://github.com/jgarff/rpi_ws281x.git
+#cd rpi_ws281x
+#scons
+#cd python
+#sudo python setup.py install
+#sudo pip install pause
+
 from neopixel import *
 
 # LED strip configuration:
@@ -24,10 +36,10 @@ if __name__ == '__main__':
 
     import ConfigParser
     from datetime import datetime
-
+    import time 
     now = datetime.now()
     config = ConfigParser.ConfigParser()
-    config.read('/home/pi/Projects/GTFTS/schedule.ini')
+    config.read('/home/pi/code/GTFTS/schedule.ini')
 
     # Create NeoPixel object with appropriate configuration.
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, LED_STRIP)
@@ -35,30 +47,32 @@ if __name__ == '__main__':
     strip.begin()
 
 
-    for sections in config.sections():
-        print sections
-#        print "length " + str(len(config.sections()))
-#        print 'index ' + str(config.sections().index(sections))
-        cur_idx = config.sections().index(sections)
-        period1 = config.get(sections, 'time')
+    while True:
+        for sections in config.sections():
+            print sections
+#           print "length " + str(len(config.sections()))
+#           print 'index ' + str(config.sections().index(sections))
+            cur_idx = config.sections().index(sections)
+            period1 = config.get(sections, 'time')
 
-        print 'period 1 ' + period1
-        if cur_idx == len(config.sections())-1:
-            period2 = config.get(config.sections()[0], 'time')
-        else:
-            period2 = config.get(config.sections()[cur_idx+1], 'time')
-        print 'period 2 ' + period2
-        time_1 = now.replace(hour=datetime.strptime(period1,'%I:%M%p').time().hour, minute=datetime.strptime(period1,'%I:%M%p').time().minute, second=0, microsecond=0)
-        time_2 = now.replace(hour=datetime.strptime(period2,'%I:%M%p').time().hour, minute=datetime.strptime(period2,'%I:%M%p').time().minute, second=0, microsecond=0)
-        if time_in_range(time_1, time_2, now)== True:
-            strip.setPixelColorRGB(0, 200, 240, 0)
-            color = tuple(map(int,config.get(sections, 'color').split(',')))
-            brightness = config.get(sections, 'brightness')
-            print period1 + " : " + period2
-            print brightness, color
-            strip.setPixelColorRGB(0, *color)
-            strip.setBrightness(int((float(brightness)/100)*255))
-            print float(brightness), int((float(brightness)/100)*255)
-            strip.show()
+            print 'period 1 ' + period1
+            if cur_idx == len(config.sections())-1:
+                period2 = config.get(config.sections()[0], 'time')
+            else:
+                period2 = config.get(config.sections()[cur_idx+1], 'time')
+            print 'period 2 ' + period2
+            time_1 = now.replace(hour=datetime.strptime(period1,'%I:%M%p').time().hour, minute=datetime.strptime(period1,'%I:%M%p').time().minute, second=0, microsecond=0)
+            time_2 = now.replace(hour=datetime.strptime(period2,'%I:%M%p').time().hour, minute=datetime.strptime(period2,'%I:%M%p').time().minute, second=0, microsecond=0)
+            if time_in_range(time_1, time_2, now)== True:
+                #strip.setPixelColorRGB(0, 200, 240, 0)
+                color = tuple(map(int,config.get(sections, 'color').split(',')))
+                brightness = config.get(sections, 'brightness')
+                print period1 + " : " + period2
+                print brightness, color
+                strip.setPixelColorRGB(0, *color)
+                strip.setBrightness(int((float(brightness)/100)*255))
+                print float(brightness), int((float(brightness)/100)*255)
+                strip.show()
+        print "done with for loop"
+        time.sleep(60)
 
- 
