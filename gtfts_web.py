@@ -7,8 +7,12 @@
 #cd rpi_ws281x
 #scons
 #cd python
+#wget https://pypi.python.org/packages/source/s/setuptools/setuptools-5.7.zip
 #sudo python setup.py install
 #sudo pip install pause
+#sudo nano /etc/rc.local
+###add "sudo python /home/pi/sample.py &" to end, just before "exit 0"
+#sudo reboot
 
 from neopixel import *
 import logging
