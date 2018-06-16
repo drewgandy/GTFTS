@@ -11,7 +11,7 @@
 #sudo python setup.py install
 #sudo pip install pause
 #sudo nano /etc/rc.local
-###add "sudo python /home/pi/sample.py &" to end, just before "exit 0"
+###add "sudo python /home/pi/code/GTFTS/gtfts_web.py &" to end, just before "exit 0"
 #sudo reboot
 
 from neopixel import *
